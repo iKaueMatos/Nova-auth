@@ -164,7 +164,8 @@ public class UserEntity implements UserDetails {
      * @param isAdmin True se o usuário for um administrador, False caso contrário.
      */
     public void setRoles(Boolean isAdmin) {
-        this.roles = isAdmin ? Collections.singleton(CustomGrantedAuthority.ADMIN) : Collections.singleton(CustomGrantedAuthority.USER);
+        this.roles = isAdmin ? Collections.singleton(CustomGrantedAuthority.ADMIN)
+                : Collections.singleton(CustomGrantedAuthority.USER);
     }
 
     public UserEntity(UserDTO user) {
@@ -174,5 +175,6 @@ public class UserEntity implements UserDetails {
         this.id = user.getId();
     }
 
-    public UserEntity() { }
+    public UserEntity() {
+    }
 }

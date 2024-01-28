@@ -37,8 +37,7 @@ public class RedefinePasswordService {
     public RedefinePasswordService(UserRepository userRepository,
             AnonymizationService anonymizationService,
             CodeExpiration codeExpiration,
-            AuthRedefinePasswordConcludedPublishEventListenerComponent authRedefinePasswordConcludedPublishEventListenerComponent
-    ) {
+            AuthRedefinePasswordConcludedPublishEventListenerComponent authRedefinePasswordConcludedPublishEventListenerComponent) {
         this.userRepository = userRepository;
         this.anonymizationService = anonymizationService;
         this.codeExpiration = codeExpiration;
@@ -51,8 +50,9 @@ public class RedefinePasswordService {
             if (!isCodeValidad) {
                 log.info("Codigo inválido: {}");
                 return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseMessageDTO("Token expirado!", this.getClass().getName(), "Token expirado, tempo minimo ultrapassado", null));
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new ResponseMessageDTO("Token expirado!", this.getClass().getName(),
+                                "Token expirado, tempo minimo ultrapassado", null));
             }
 
             Optional<UserEntity> userOptional = userRepository
@@ -91,7 +91,8 @@ public class RedefinePasswordService {
             log.error("Ocorreu um erro ao redefinir a senha", e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseMessageDTO("Erro", this.getClass().getName(), "Ocorreu um erro ao processar a requisição", null));
+                    .body(new ResponseMessageDTO("Erro", this.getClass().getName(),
+                            "Ocorreu um erro ao processar a requisição", null));
         }
     }
 }

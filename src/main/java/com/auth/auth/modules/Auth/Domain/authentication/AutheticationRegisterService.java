@@ -116,7 +116,8 @@ public class AutheticationRegisterService implements IAutheticationRegister {
                         errorMessage, this.getClass().getSimpleName(), null, null));
             }
 
-            Optional<CustomerEntity> existingCustomer = customerRepository.findByEmail(customerDTO.getEmail());
+            Optional<UserEntity> existingCustomer = userRepository.findByEmail(customerDTO.getEmail()
+                .formatted(anonymizationService.decrypt(this.toString())));
             if (existingCustomer.isPresent()) {
                 log.warn("usuário já existe {}");
                 return ResponseEntity.badRequest()

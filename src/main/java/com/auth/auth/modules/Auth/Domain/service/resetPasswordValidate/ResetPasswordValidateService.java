@@ -15,14 +15,17 @@ import com.auth.auth.modules.Auth.Domain.provider.resetPassword.CodeExpiration;
 
 @Service
 public class ResetPasswordValidateService {
-    private CodeExpiration codeExpiration;
 
-    @Autowired
-    public ResetPasswordValidateService(CodeExpiration codeExpiration) {
-        this.codeExpiration = codeExpiration;
-    }
+  private CodeExpiration codeExpiration;
 
-    public boolean validateToken(TokenResetPasswordDTO tokenResetPasswordDTO) {
-        return codeExpiration.isCodeExpired(tokenResetPasswordDTO.getTokenPassword());
-    }
+  @Autowired
+  public ResetPasswordValidateService(CodeExpiration codeExpiration) {
+    this.codeExpiration = codeExpiration;
+  }
+
+  public boolean validateToken(TokenResetPasswordDTO tokenResetPasswordDTO) {
+    return codeExpiration.isCodeExpired(
+      tokenResetPasswordDTO.getTokenPassword()
+    );
+  }
 }

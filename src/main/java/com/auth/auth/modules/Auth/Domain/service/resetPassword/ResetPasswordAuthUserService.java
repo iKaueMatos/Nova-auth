@@ -28,33 +28,53 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class ResetPasswordAuthUserService {
+
     private UserRepository userRepository;
     private AnonymizationService anonymizationService;
 
     @Autowired
-    public ResetPasswordAuthUserService(UserRepository userRepository, AnonymizationService anonymizationService) {
+    public ResetPasswordAuthUserService(
+            UserRepository userRepository,
+            AnonymizationService anonymizationService) {
         this.userRepository = userRepository;
         this.anonymizationService = anonymizationService;
     }
 
-    public ResponseEntity<ResponseMessageDTO> sendResetPasswordEmail(AuthUserResetPassawordDTO authUserResetPassawordDTO) {
+    public ResponseEntity<ResponseMessageDTO> sendResetPasswordEmail(
+            AuthUserResetPassawordDTO authUserResetPassawordDTO) {
         try {
-            UserEntity userByEmail = userRepository.findByEmail(authUserResetPassawordDTO.getEmail());
-            if (userByEmail != null) {
-                return applyAndRespond(userByEmail);
+            Optional<UserEntity> searchUserByEmail = userRepository.findByEmail(
+                    authUserResetPassawordDTO.getEmail());
+            boolean user = searchUserByEmail.isPresent();
+            if (user) {
+                return applyAndRespond(searchUserByEmail.get());
             }
 
             // Se o usuário por e-mail não foi encontrado, tenta buscar pelo nome de usuário
-            return Optional.ofNullable(userRepository.findByUsername(authUserResetPassawordDTO.getUsername()))
+            return Optional
+                    .ofNullable(
+                            userRepository.findByUsername(authUserResetPassawordDTO.getUsername()))
                     .map(this::applyAndRespond)
-                    .orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                            .body(new ResponseMessageDTO("Erro", this.getClass().getName(),
-                                    "Nenhum usuário encontrado para o e-mail ou nome de usuário fornecido", null)));
+                    .orElse(
+                            ResponseEntity
+                                    .status(HttpStatus.BAD_REQUEST)
+                                    .body(
+                                            new ResponseMessageDTO(
+                                                    "Erro",
+                                                    this.getClass().getName(),
+                                                    "Nenhum usuário encontrado para o e-mail ou nome de usuário fornecido",
+                                                    null)));
         } catch (Exception e) {
             log.error("Erro ao enviar email de redefinição de senha", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseMessageDTO("Erro", this.getClass().getName(),
-                            "Erro ao processar a solicitação de redefinição de senha: " + e.getMessage(), null));
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ResponseMessageDTO(
+                                    "Erro",
+                                    this.getClass().getName(),
+                                    "Erro ao processar a solicitação de redefinição de senha: " +
+                                            e.getMessage(),
+                                    null));
         }
     }
 
@@ -63,9 +83,15 @@ public class ResetPasswordAuthUserService {
             return send(user);
         } catch (Exception e) {
             log.error("Erro ao enviar email de redefinição de senha", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseMessageDTO("Erro", this.getClass().getName(),
-                            "Erro ao processar a solicitação de redefinição de senha: " + e.getMessage(), null));
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ResponseMessageDTO(
+                                    "Erro",
+                                    this.getClass().getName(),
+                                    "Erro ao processar a solicitação de redefinição de senha: " +
+                                            e.getMessage(),
+                                    null));
         }
     }
 
@@ -75,10 +101,17 @@ public class ResetPasswordAuthUserService {
         user.setResetPasswordToken(resetCode);
         user.setResetPasswordTokenExpiration(LocalDateTime.now());
         userRepository.save(user);
-        
-        AuthResetPasswordPublishEventListenerComponent authResetPasswordPublish = new AuthResetPasswordPublishEventListenerComponent(anonymizationService);
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(new ResponseMessageDTO("Sucesso",
-                 this.getClass().getName(), "Email enviado com sucesso", null));
+
+        AuthResetPasswordPublishEventListenerComponent authResetPasswordPublish = new AuthResetPasswordPublishEventListenerComponent(
+                anonymizationService);
+        authResetPasswordPublish.publishCustomerResetPasswordEvent(user, resetCode);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        new ResponseMessageDTO(
+                                "Sucesso",
+                                this.getClass().getName(),
+                                "Email enviado com sucesso",
+                                null));
     }
 }
