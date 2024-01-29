@@ -5,18 +5,17 @@
  * Propriedade da Empresa: Todos os direitos reservados
  * ----------------------------------------------------------------------------
  */
-package com.auth.auth.Core.config.modelMapperHelpers;
+package com.auth.auth.core.config.server;
 
-import org.modelmapper.ModelMapper;
+import java.util.Random;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ModelMapperConfig {
-
-    @Bean
-    public ModelMapper modelMapper() {
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper;
-    }
+public class PortRandomConfiguration {
+      @Bean
+        public int randomServerPort() {
+            return new Random().nextInt(9000 - 8080) + 8080;
+        }
 }

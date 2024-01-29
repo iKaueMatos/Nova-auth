@@ -5,15 +5,15 @@
  * Propriedade da Empresa: Todos os direitos reservados
  * ----------------------------------------------------------------------------
  */
-package com.auth.auth.Core.config.environment;
+package com.auth.auth.core.config.environment;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile("dev")
-public class DevConfig {
-    public DevConfig() {
-        System.out.println("Ambiente de desenvolvimento!!");
+@Profile("prod")
+public class ProdConfig {
+    public ProdConfig() {
+        System.out.println("Ambiente de produção!!");
     }
 }

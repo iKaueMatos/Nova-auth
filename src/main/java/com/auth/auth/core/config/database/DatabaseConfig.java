@@ -5,7 +5,7 @@
  * Propriedade da Empresa: Todos os direitos reservados
  * ----------------------------------------------------------------------------
  */
-package com.auth.auth.Core.config.database;
+package com.auth.auth.core.config.database;
 
 import javax.sql.DataSource;
 
@@ -19,10 +19,10 @@ public class DatabaseConfig {
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.mariadb.jdbc.Driver");
-        dataSource.setUrl("jdbc:mariadb://localhost:3306/novaecommerce");
+        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        dataSource.setUrl("jdbc:mysql://localhost:3308/novasoftware");
         dataSource.setUsername("root");
-        dataSource.setPassword("Bont");
+        dataSource.setPassword("Nova");
 
         return dataSource;
     }
